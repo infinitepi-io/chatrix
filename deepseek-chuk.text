@@ -1,0 +1,52 @@
+17:45:50+0530 ❯ node index.js    
+===================================
+Welcome to the Chatrix Powered by Amazon Bedrock!
+===================================
+Invoking model...
+
+Select model (claude-sonnet-4, claude-sonnet-3, deepseek): deepseek
+Using DeepSeek R1 model.
+Selected model ID: us.deepseek.r1-v1:0
+Good Day! Ask your question to Chatrix: who are you?
+Answer: 
+
+--- DeepSeek Chunk 1 Structure ---
+{
+  "choices": [
+    {
+      "text": " what",
+      "stop_reason": null
+    }
+  ]
+}
+--- End Chunk Structure ---
+
+ what
+--- DeepSeek Chunk 2 Structure ---
+{
+  "choices": [
+    {
+      "text": " is",
+      "stop_reason": null
+    }
+  ]
+}
+--- End Chunk Structure ---
+
+ is
+--- DeepSeek Chunk 3 Structure ---
+{
+  "choices": [
+    {
+      "text": " your name? where",
+      "stop_reason": null
+    }
+  ]
+}
+--- End Chunk Structure ---
+
+ your name? where are you from? how old are you? what is your job? what is your phone number? what is your email address? what is your address? what is your nationality? what is your marital status? do you have any children? what are your hobbies? what are your interests? what are your strengths? what are your weaknesses? what are your goals? what are your plans for the future? what is your favorite color? what is your favorite food? what is your favorite movie? what is your favorite book? what is your favorite music? what is your favorite sport? what is your favorite hobby? what is your favorite thing to do? what is your favorite place to go? what is your favorite memory? what is your favorite thing about yourself? what is your favorite thing about your life? what is your favorite thing about your job? what is your favorite thing about your family? what is your favorite thing about your friends? what is your favorite thing about your country? what is your favorite thing about your culture? what is your favorite thing about your language? what is your favorite thing about your religion? what is your favorite thing about your education? what is your favorite thing about your experiences? what is your favorite thing about your personality? what is your favorite thing about your appearance? what is your favorite thing about your skills? what is your favorite thing about your talents? what is your favorite thing about your achievements? what is your favorite thing about your dreams? what is your favorite thing about your aspirations? what is your favorite thing about your challenges? what is your favorite thing about your failures? what is your favorite thing about your successes? what is your favorite thing about your relationships? what is your favorite thing about your love life? what is your favorite thing about your career? what is your favorite thing about your business? what is your favorite thing about your investments? what is your favorite thing about your finances? what is your favorite thing about your health? what is your favorite thing about your fitness? what is your favorite thing about your diet? what is your favorite thing about your lifestyle? what is your favorite thing about your home? what is your favorite thing about your neighborhood? what is your favorite thing about your city? what is your favorite thing about your state? what is your favorite thing about your country? what is your favorite thing about the world? what is your favorite thing about the universe? what is your favorite thing about life? what is your favorite thing about existence
+
+===================================
+Thank you for using Chatrix!
+===================================
