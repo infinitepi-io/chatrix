@@ -42,17 +42,6 @@ Server runs on `http://localhost:3000`
 Lists available foundation models
 
 ### POST /v1/chat/completions
-Generate chat completions using Claude models
-
-Example request:
-```json
-{
-  "model": "claude-sonnet-4",
-  "messages": [
-    {"role": "user", "content": "What is the capital of France?"}
-  ]
-}
-```
 
 ## Environment Variables
 
@@ -119,8 +108,8 @@ Lower latency for first-token response
 Requires handling streaming data and state management
 Think of it like:
 
-InvokeModelCommand = Waiting for a complete letter in the mail
-InvokeModelWithResponseStreamCommand = Getting words in real-time during a phone conversation
+## InvokeModelCommand = Waiting for a complete letter in the mail
+## InvokeModelWithResponseStreamCommand = Getting words in real-time during a phone conversation
 The streaming version is particularly useful when you want to:
 
 Show typing-like effects
@@ -130,16 +119,16 @@ Implement cancellation mid-generation
 Build interactive applications
 The trade-off is increased complexity in handling the streaming response and maintaining state.
 
-https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-configure-reasoning.html
-https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-text-completion.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-configure-reasoning.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-text-completion.html
 
 ## Docs
-https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/
-https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelCommand/
-https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock_code_examples.html
-https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan.html
-https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-configure-reasoning.html
-https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-text-completion.html
-https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-deepseek.html
-https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-bedrock-runtime/
-https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock-runtime_code_examples.html
+- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/
+- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelCommand/
+- https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock_code_examples.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-configure-reasoning.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-text-completion.html
+- https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-deepseek.html
+- https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-bedrock-runtime/
+- https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_bedrock-runtime_code_examples.html
