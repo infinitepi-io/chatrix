@@ -1,14 +1,15 @@
-# Chatrix - OpenAI-Compatible AWS Bedrock API
+# Chatrix - Claude-Compatible AWS Bedrock API
 
-Chatrix is an OpenAI-compatible API server that provides access to AWS Bedrock foundation models through familiar OpenAI endpoints.
+Chatrix is a Claude-compatible API server that provides access to AWS Bedrock foundation models through familiar Claude endpoints.
 
 ## Features
 
-- 🔌 **OpenAI-Compatible**: Drop-in replacement for OpenAI API clients
-- 🏗️ **AWS Bedrock Integration**: Access to Claude Sonnet 4, Claude Sonnet 3, and DeepSeek R1 models
+- 🔌 **Claude-Compatible**: Drop-in replacement for Claude API clients
+- 🏗️ **AWS Bedrock Integration**: Only supports claude models. 
 - 💰 **Cost-Controlled**: Built-in cost optimization with parameter limits
 - 🚀 **Streaming Support**: Real-time response streaming
 - ⚡ **Fastify-Based**: High-performance server built with Fastify
+- 💱 **INR Support**: Cost tracking in Indian Rupees
 
 ## Quick Start
 
@@ -24,72 +25,78 @@ export AWS_SECRET_ACCESS_KEY=your_secret_key
 export AWS_REGION=us-west-2
 ```
 
+### Install Dependencies
+```bash
+pnpm install
+```
+
 ### Start Server
 ```bash
-npm start
+pnpm start
 ```
 Server runs on `http://localhost:3000`
 
-## API Endpoints
+## Available Endpoints
 
 ### GET /v1/models
-Lists available models.
+Lists available foundation models
 
 ### POST /v1/chat/completions
-Creates a chat completion with cost controls.
+Generate chat completions using Claude models
 
-## Available Models
-
-| Model ID | Provider | Bedrock ID |
-|----------|----------|------------|
-| `claude-sonnet-4` | Anthropic | `us.anthropic.claude-sonnet-4-20250514-v1:0` |
-| `claude-sonnet-3` | Anthropic | `us.anthropic.claude-3-7-sonnet-20250219-v1:0` |
-| `deepseek` | DeepSeek | `us.deepseek.r1-v1:0` |
-
-## Parameters & Cost Control
-
-### Supported Parameters
-
-| Parameter | User Control | Default | Limit | Description |
-|-----------|--------------|---------|-------|-------------|
-| `max_tokens` | ✅ Limited | 512 | **Max: 1024** | Maximum tokens in response |
-| `temperature` | ❌ Fixed | 0.3 | 0.3 | Controls randomness (0.0-1.0) |
-| `top_p` | ❌ Fixed | 0.3 | 0.3 | Controls diversity (0.0-1.0) |
-| `stream` | ✅ Full | false | - | Enable streaming responses |
-
-### Parameter Explanations
-
-#### max_tokens
-- **What it does**: Controls the maximum length of the model's response
-- **Cost impact**: 🔴 **HIGH** - Directly affects billing (more tokens = higher cost)
-- **Range**: 1-1024 (capped for cost control)
-- **Default**: 512 tokens (~400 words)
-
-#### temperature
-- **What it does**: Controls creativity/randomness in responses
-- **Cost impact**: 🟡 **MEDIUM** - Higher values may generate longer responses
-- **Range**: 0.0 (deterministic) to 1.0 (very creative)
-- **Fixed at**: 0.3 (balanced for quality and cost)
-
-#### top_p
-- **What it does**: Controls diversity by limiting token selection to top probability mass
-- **Cost impact**: 🟢 **LOW** - Minimal impact on response length
-- **Range**: 0.0 to 1.0
-- **Fixed at**: 0.3 (focused, coherent responses)
-
-## Client Integration
-
-### Using with Jan App
-1. **Base URL**: `http://localhost:3000`
-2. **API Key**: Any string (e.g., "dummy-key")
-3. **Models**: Will auto-populate from `/v1/models`
-
-
-## Claude Models 
+Example request:
+```json
+{
+  "model": "claude-sonnet-4",
+  "messages": [
+    {"role": "user", "content": "What is the capital of France?"}
+  ]
+}
 ```
-anthropic.claude-sonnet-4-20250514-v1:0
-arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0
-```
+
+## Environment Variables
+
+- `AWS_REGION`: AWS region (default: us-west-2)
+- `SHOW_COST_INFO`: Show cost information (default: true)
+- `PORT`: Server port (default: 3000)
+
+## Environment Setup
+
+run .export-claude script to export the variables.
+
+These variables configure:
+- Default model selection
+- Fast/small model option
+- API base URL
+- Authentication token
+
+## Supported Models
+
+### Anthropic Models
+- `claude-sonnet-4` (anthropic.claude-3-sonnet-20240229-v1:0)
+  - Input: $0.003/1K tokens
+  - Output: $0.015/1K tokens
+
+- `claude-sonnet-3` (anthropic.claude-3-sonnet-20240229-v1:0)
+  - Input: $0.003/1K tokens
+  - Output: $0.015/1K tokens
+
+### Model Features
+- Max tokens: 1024 per request
+- Temperature: 0.3 (optimized for code)
+- Top-p: 0.3 (focused responses)
+- Streaming support enabled
+
+### Default Model
+If no model is specified, the system defaults to `claude-sonnet-3`.
+
+## Cost Control
+
+Built-in cost control features:
+- Token limits
+- Temperature controls
+- Usage tracking in INR
+- Real-time exchange rate updates
 
 ## InvokeModelCommand
 
