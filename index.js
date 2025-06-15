@@ -11,36 +11,136 @@ const fastify = Fastify({ logger: true });
 const AWS_REGION = "us-west-2";
 const client = new BedrockRuntimeClient({ region: AWS_REGION });
 
-// v1/models endpoint - OpenAI compatible
-fastify.get('/v1/models', async () => {
-  const models = [
-    {
-      id: "claude-sonnet-4",
-      object: "model",
-      created: Math.floor(Date.now() / 1000),
-      owned_by: "anthropic"
-    },
-    {
-      id: "claude-sonnet-3",
-      object: "model", 
-      created: Math.floor(Date.now() / 1000),
-      owned_by: "anthropic"
-    },
-    {
-      id: "deepseek",
-      object: "model",
-      created: Math.floor(Date.now() / 1000),
-      owned_by: "deepseek"
+// Anthropic API compatible endpoint for Claude Code
+fastify.post('/v1/messages', async (request, reply) => {
+  const requestId = `req-${Date.now()}`;
+  const startTime = Date.now();
+  
+  try {
+    const { model, messages, max_tokens, stream } = request.body;
+    
+    logger.info('Anthropic API request received', {
+      requestId,
+      model,
+      clientIP: request.ip
+    });
+    
+    if (!model || !messages) {
+      return reply.code(400).type('application/json').send({
+        type: "error",
+        error: {
+          message: "Missing required parameters: model and messages",
+          type: "invalid_request_error"
+        }
+      });
     }
-  ];
 
-  return {
-    object: "list",
-    data: models
-  };
+    // Extract user prompt from messages
+    let userPrompt = "";
+    try {
+      const lastMessage = messages[messages.length - 1];
+      userPrompt = lastMessage?.content || "";
+      
+      // Handle different content formats
+      if (Array.isArray(userPrompt)) {
+        userPrompt = userPrompt.map(item => {
+          if (item && item.type === 'text' && typeof item.text === 'string') {
+            return item.text;
+          }
+          return '';
+        }).filter(text => text.length > 0).join('\n');
+      }
+      
+      if (typeof userPrompt !== 'string') {
+        userPrompt = String(userPrompt || '');
+      }
+    } catch (error) {
+      console.error('Error processing userPrompt:', error);
+      userPrompt = '';
+    }
+    
+    const modelId = getModelId(model);
+    const payload = foundationModelsPayload(userPrompt, model, max_tokens || 1024, 0.3, 0.3);
+
+    const response = await client.send(
+      new InvokeModelWithResponseStreamCommand({
+        contentType: "application/json",
+        body: JSON.stringify(payload),
+        modelId: modelId,
+      })
+    );
+
+    let fullResponse = "";
+    
+    // Process all chunks to get complete response
+    for await (const chunk of response.body) {
+      if (chunk.chunk?.bytes) {
+        const chunkData = JSON.parse(new TextDecoder().decode(chunk.chunk.bytes));
+        let content = "";
+        if (chunkData.type === "content_block_delta" && chunkData.delta?.text) {
+          content = chunkData.delta.text;
+        }
+
+        if (content) {
+          fullResponse += content;
+        }
+      }
+    }
+
+    // Return Anthropic API format
+    const anthropicResponse = {
+      id: `msg_${Date.now()}`,
+      type: "message",
+      role: "assistant",
+      content: [
+        {
+          type: "text",
+          text: fullResponse
+        }
+      ],
+      model: model,
+      stop_reason: "end_turn",
+      stop_sequence: null,
+      usage: {
+        input_tokens: Math.ceil(userPrompt.length / 4),
+        output_tokens: Math.ceil(fullResponse.length / 4)
+      }
+    };
+
+    const duration = Date.now() - startTime;
+    logger.info('Anthropic API request completed', {
+      requestId,
+      model,
+      responseLength: fullResponse.length,
+      durationMs: duration,
+      clientIP: request.ip
+    });
+
+    return anthropicResponse;
+
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    
+    logger.error('Anthropic API request failed', {
+      requestId,
+      model: request.body?.model,
+      error: error.message,
+      durationMs: duration,
+      clientIP: request.ip
+    });
+    
+    fastify.log.error("Error in Anthropic API:", error);
+    return reply.code(500).type('application/json').send({
+      type: "error",
+      error: {
+        message: "Internal server error",
+        type: "internal_server_error"
+      }
+    });
+  }
 });
 
-// v1/chat/completions endpoint - OpenAI compatible
+// OpenAI compatible endpoint
 fastify.post('/v1/chat/completions', async (request, reply) => {
   const requestId = `req-${Date.now()}`;
   const startTime = Date.now();
@@ -69,14 +169,42 @@ fastify.post('/v1/chat/completions', async (request, reply) => {
     }
 
     // Extract user prompt from messages
-    const userPrompt = messages[messages.length - 1]?.content || "";
+    let userPrompt = "";
+    try {
+      const lastMessage = messages[messages.length - 1];
+      userPrompt = lastMessage?.content || "";
+      
+      // Handle different content formats
+      if (Array.isArray(userPrompt)) {
+        // Extract text from content array and combine
+        userPrompt = userPrompt.map(item => {
+          if (item && item.type === 'text' && typeof item.text === 'string') {
+            return item.text;
+          }
+          return '';
+        }).filter(text => text.length > 0).join('\n');
+      }
+      
+      // Ensure userPrompt is always a string
+      if (typeof userPrompt !== 'string') {
+        userPrompt = String(userPrompt || '');
+      }
+    } catch (error) {
+      console.error('Error processing userPrompt:', error);
+      userPrompt = '';
+    }
+    
     const modelId = getModelId(model);
     const payload = foundationModelsPayload(userPrompt, model, max_tokens, temperature, top_p)
 
-    // Always streaming response
-    reply.raw.setHeader('Content-Type', 'text/event-stream');
-    reply.raw.setHeader('Cache-Control', 'no-cache');
-    reply.raw.setHeader('Connection', 'keep-alive');
+    const isStreaming = request.body.stream !== false; // Default to streaming
+    
+    if (isStreaming) {
+      // Streaming response
+      reply.raw.setHeader('Content-Type', 'text/event-stream');
+      reply.raw.setHeader('Cache-Control', 'no-cache');
+      reply.raw.setHeader('Connection', 'keep-alive');
+    }
 
     const response = await client.send(
       new InvokeModelWithResponseStreamCommand({
@@ -102,6 +230,7 @@ fastify.post('/v1/chat/completions', async (request, reply) => {
         } else {
           if (chunkData.type === "content_block_delta" && chunkData.delta?.text) {
             content = chunkData.delta.text;
+            console.log('Content block delta received:', content);
           }
         }
 
@@ -181,6 +310,7 @@ fastify.post('/v1/chat/completions', async (request, reply) => {
     });
     
     fastify.log.error("Error in chat completion:", error);
+    console.error("Full error details:", error);
     return reply.code(500).type('application/json').send({
       error: {
         message: "Internal server error",
@@ -193,10 +323,9 @@ fastify.post('/v1/chat/completions', async (request, reply) => {
 const start = async () => {
   try {
     await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    console.log('Chatrix OpenAI-compatible server running on port 3000');
+    console.log('Chatrix server running on port 3000');
     console.log('Available endpoints:');
-    console.log('  GET  /v1/models');
-    console.log('  POST /v1/chat/completions');
+    console.log('  POST /v1/messages (Anthropic API format - for Claude Code)');
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
