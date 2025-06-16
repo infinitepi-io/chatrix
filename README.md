@@ -49,6 +49,10 @@ Setup below variable:
 export ANTHROPIC_BASE_URL=http://localhost:3000
 export ANTHROPIC_AUTH_TOKEN="some-api-key"
 ```
+### Docs:
+- https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+- https://docs.anthropic.com/en/docs/claude-code/memory
+- https://docs.anthropic.com/en/docs/claude-code/costs
 
 ## Environment Variables
 
