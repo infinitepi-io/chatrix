@@ -43,6 +43,13 @@ Lists available foundation models
 
 ### POST /v1/chat/completions
 
+### Claude Code setup.
+Setup below variable:
+```bash
+export ANTHROPIC_BASE_URL=http://localhost:3000
+export ANTHROPIC_AUTH_TOKEN="some-api-key"
+```
+
 ## Environment Variables
 
 - `AWS_REGION`: AWS region (default: us-west-2)
