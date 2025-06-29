@@ -12,8 +12,8 @@
   "dependencies": {
     "@aws-sdk/client-bedrock": "^3.0.0",
     "@aws-sdk/client-bedrock-runtime": "^3.0.0",
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
     "fastify": "^4.0.0",
-    "@aws-lambda-powertools/logger": "^2.21.0",
-    "axios": "^1.10.0"
+    "@aws-lambda-powertools/logger": "^2.21.0"
   }
 }

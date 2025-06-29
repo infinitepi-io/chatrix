@@ -12,14 +12,19 @@ const modelConfigration = (UserPrompt, max_tokens, temperature) => ({
       max_tokens: max_tokens > 1024 ? 1024 : max_tokens,
       temperature: temperature > 0.3 ? 0.3 : temperature,
       top_p: 0.3,
+      system: [{
+        type: 'text',
+        text: 'You are a helpful AI assistant.',
+        cache_control: { type: 'ephemeral' }
+      }],
       messages: [{ role: 'user', content: [{ type: 'text', text: UserPrompt }] }]
     }
   }
 })
 
 export const foundationModelsPayload = (UserPrompt, modelName, max_tokens, temperature) => {
-  const config = modelConfigration(UserPrompt, max_tokens, temperature);
-  
+  const config = modelConfigration(UserPrompt, max_tokens, temperature)
+
   switch (modelName) {
     case 'claude-sonnet-4-20250514':
       return config.claude.payload

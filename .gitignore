@@ -45,3 +45,6 @@ build/
 .aws/
 credentials
 config
+
+# Claude
+CLAUDE.local.md
