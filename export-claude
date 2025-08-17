@@ -15,3 +15,17 @@ export ANTHROPIC_AUTH_TOKEN='some-api-key'
 # Verify exports
 echo "🔄 Checking environment variables..."
 printenv | grep ANTHROPIC_
+
+curl -X POST http://localhost:3000/v1/messages \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer xxxx" \
+        -d '{
+          "model": "deepseek-r1-v1",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Hello?Who are you?"
+            }
+          ],
+          "max_tokens": 1024
+ }'

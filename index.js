@@ -7,7 +7,7 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand
 } from '@aws-sdk/client-secrets-manager'
-import { getModelId, foundationModelsPayload } from './modules/foundation-models.js'
+import { getModelId } from './modules/foundation-models.js'
 import { Logger } from '@aws-lambda-powertools/logger'
 
 const logger = new Logger({ serviceName: 'chatrix', level: 'INFO' })
@@ -73,6 +73,10 @@ const BEDROCK_PRICING = {
   'claude-sonnet-4': {
     input: 0.003, // $3 per 1M = $0.003 per 1K input tokens
     output: 0.015 // $15 per 1M = $0.015 per 1K output tokens
+  },
+  'deepseek-r1-v1': {
+    input: 0.0014, // $1.4 per 1M = $0.0014 per 1K input tokens
+    output: 0.0028 // $2.8 per 1M = $0.0028 per 1K output tokens
   }
 }
 
@@ -160,6 +164,11 @@ fastify.post('/v1/messages', async (request, reply) => {
 
     const converseParams = {
       modelId: getModelId(model),
+      system: [
+        {
+          text: "You are an expert coding assistant. Provide clean, well-commented code with best practices and multiple approaches when helpful."
+        }
+      ],
       messages: [
         {
           role: 'user',
