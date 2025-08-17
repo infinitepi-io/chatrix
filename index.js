@@ -1,7 +1,7 @@
 import Fastify from 'fastify'
 import {
   BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand
+  ConverseStreamCommand
 } from '@aws-sdk/client-bedrock-runtime'
 import {
   SecretsManagerClient,
@@ -24,7 +24,7 @@ const secretsClient = new SecretsManagerClient({ region: AWS_REGION })
 
 // Cache for API key
 let validApiKey = null
-const SecretName = process.env.SecretName || 'chatrix/api-key'
+const SecretName = process.env.SecretName || 'prod/chatrix/api-key'
 
 // Function to get API key from Secrets Manager
 const getValidApiKey = async () => {
@@ -37,7 +37,7 @@ const getValidApiKey = async () => {
     const response = await secretsClient.send(
       new GetSecretValueCommand({ SecretId: SecretName })
     )
-    
+
     const secret = JSON.parse(response.SecretString)
     validApiKey = secret.api_key
     logger.info('API key loaded successfully')
@@ -56,7 +56,7 @@ const validateApiKey = async (authHeader) => {
 
   const token = authHeader.substring(7) // Remove 'Bearer ' prefix
   const validKey = await getValidApiKey()
-  
+
   return token === validKey
 }
 
@@ -101,9 +101,9 @@ fastify.post('/v1/messages', async (request, reply) => {
     // Validate API key
     const authHeader = request.headers.authorization
     const isValidApiKey = await validateApiKey(authHeader)
-    
+
     if (!isValidApiKey) {
-      logger.warn('Invalid or missing API key', { 
+      logger.warn('Invalid or missing API key', {
         requestId,
         clientIP: request.ip,
         hasAuth: !!authHeader
@@ -158,37 +158,48 @@ fastify.post('/v1/messages', async (request, reply) => {
       userPrompt = ''
     }
 
-    const modelId = getModelId(model)
-    const payload = foundationModelsPayload(userPrompt, model, max_tokens || 1024, 0.3, 0.3)
-
-    const response = await client.send(
-      new InvokeModelWithResponseStreamCommand({
-        contentType: 'application/json',
-        body: JSON.stringify(payload),
-        modelId
-      })
-    )
+    const converseParams = {
+      modelId: getModelId(model),
+      messages: [
+        {
+          role: 'user',
+          content: [{ text: userPrompt }]
+        }
+      ],
+      inferenceConfig: {
+        maxTokens: max_tokens || 1024,
+        temperature: 0.3,
+        topP: 0.3
+      }
+    }
+    const response = await client.send(new ConverseStreamCommand(converseParams))
 
     let fullResponse = ''
+    let inputTokens = 0
+    let outputTokens = 0
 
     // Process all chunks to get complete response
-    for await (const chunk of response.body) {
-      if (chunk.chunk?.bytes) {
-        const chunkData = JSON.parse(new TextDecoder().decode(chunk.chunk.bytes))
-        let content = ''
-        if (chunkData.type === 'content_block_delta' && chunkData.delta?.text) {
-          content = chunkData.delta.text
-        }
+    for await (const chunk of response.stream) {
+      if (chunk.contentBlockDelta?.delta?.text) {
+        const content = chunk.contentBlockDelta.delta.text
+        fullResponse += content
+      }
 
-        if (content) {
-          fullResponse += content
+      // Token usage is in the final chunk for ConverseStream
+      if (chunk.messageStop?.stopReason) {
+        // Get usage from metadata if available
+        if (chunk.metadata?.usage) {
+          inputTokens = chunk.metadata.usage.inputTokens || 0
+          outputTokens = chunk.metadata.usage.outputTokens || 0
         }
       }
     }
 
-    // Calculate token usage and cost
-    const inputTokens = Math.ceil(userPrompt.length / 4)
-    const outputTokens = Math.ceil(fullResponse.length / 4)
+    // Fallback to approximation if no usage data
+    if (inputTokens === 0) {
+      inputTokens = Math.ceil(userPrompt.length / 4)
+      outputTokens = Math.ceil(fullResponse.length / 4)
+    }
     const cost = calculateCost(model, inputTokens, outputTokens)
 
     // Return Anthropic API format
@@ -212,7 +223,7 @@ fastify.post('/v1/messages', async (request, reply) => {
         cost
       }
     }
-
+    //
     const duration = Date.now() - startTime
     logger.info('Anthropic API request completed', {
       requestId,
