@@ -1,3 +1,6 @@
+import { readFile } from 'fs/promises'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import Fastify from 'fastify'
 import {
   BedrockRuntimeClient,
@@ -9,6 +12,9 @@ import {
 } from '@aws-sdk/client-secrets-manager'
 import { getModelId } from './modules/foundation-models.js'
 import { Logger } from '@aws-lambda-powertools/logger'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const logger = new Logger({ serviceName: 'chatrix', level: 'INFO' })
 const fastify = Fastify({ logger: true })
@@ -22,9 +28,33 @@ const AWS_REGION = 'us-west-2'
 const client = new BedrockRuntimeClient({ region: AWS_REGION })
 const secretsClient = new SecretsManagerClient({ region: AWS_REGION })
 
-// Cache for API key
+// Cache for API key and system prompt
 let validApiKey = null
+let systemPrompt = null
 const SecretName = process.env.SecretName || 'prod/chatrix/api-key'
+
+// Function to load system prompt from file
+const getSystemPrompt = async () => {
+  if (systemPrompt) {
+    return systemPrompt // Return cached value
+  }
+
+  try {
+    const promptPath = join(__dirname, 'prompts', 'system-prompt.md')
+    const content = await readFile(promptPath, 'utf-8')
+
+    // Use the content as-is (it's already concise after your edits)
+    systemPrompt = content.trim()
+
+    logger.info('System prompt loaded successfully', { promptLength: systemPrompt.length })
+    return systemPrompt
+  } catch (error) {
+    logger.warn('Failed to load system prompt, using default', { error: error.message })
+    // Fallback to default
+    systemPrompt = 'You are an expert software engineering assistant. Write clean, production-ready code with proper error handling, logging, and observability.'
+    return systemPrompt
+  }
+}
 
 // Function to get API key from Secrets Manager
 const getValidApiKey = async () => {
@@ -122,6 +152,7 @@ fastify.post('/v1/messages', async (request, reply) => {
     }
 
     const { model, messages, max_tokens, stream } = request.body
+
     logger.info('Anthropic API request received', {
       requestId,
       model,
@@ -162,11 +193,34 @@ fastify.post('/v1/messages', async (request, reply) => {
       userPrompt = ''
     }
 
+    // Load system prompt from file
+    const systemPromptText = await getSystemPrompt()
+
+    // Claude 4.5+ models only support temperature OR topP, not both
+    // Older models (Claude 3.x) support both
+    const claude45Models = [
+      'claude-sonnet-4-5-20250929',
+      'claude-haiku-4-5-20251001',
+      'claude-sonnet-4-20250514',
+      'claude-opus-4-1-20250805'
+    ]
+    const isClaude45Plus = claude45Models.includes(model)
+
+    const inferenceConfig = {
+      maxTokens: max_tokens || 1024,
+      temperature: 0.3
+    }
+
+    // Only add topP for older models that support both parameters
+    if (!isClaude45Plus) {
+      inferenceConfig.topP = 0.3
+    }
+
     const converseParams = {
       modelId: getModelId(model),
       system: [
         {
-          text: "You are an expert coding assistant. Provide clean, well-commented code with best practices and multiple approaches when helpful."
+          text: systemPromptText
         }
       ],
       messages: [
@@ -175,11 +229,7 @@ fastify.post('/v1/messages', async (request, reply) => {
           content: [{ text: userPrompt }]
         }
       ],
-      inferenceConfig: {
-        maxTokens: max_tokens || 1024,
-        temperature: 0.3,
-        topP: 0.3
-      }
+      inferenceConfig
     }
     const response = await client.send(new ConverseStreamCommand(converseParams))
 
