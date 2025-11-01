@@ -193,9 +193,6 @@ fastify.post('/v1/messages', async (request, reply) => {
       userPrompt = ''
     }
 
-    // Load system prompt from file
-    const systemPromptText = await getSystemPrompt()
-
     // Claude 4.5+ models only support temperature OR topP, not both
     // Older models (Claude 3.x) support both
     const claude45Models = [
@@ -218,11 +215,6 @@ fastify.post('/v1/messages', async (request, reply) => {
 
     const converseParams = {
       modelId: getModelId(model),
-      system: [
-        {
-          text: systemPromptText
-        }
-      ],
       messages: [
         {
           role: 'user',
