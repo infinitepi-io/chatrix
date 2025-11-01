@@ -1,14 +1,20 @@
+import { readFile } from 'fs/promises'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import Fastify from 'fastify'
 import {
   BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand
+  ConverseStreamCommand
 } from '@aws-sdk/client-bedrock-runtime'
 import {
   SecretsManagerClient,
   GetSecretValueCommand
 } from '@aws-sdk/client-secrets-manager'
-import { getModelId, foundationModelsPayload } from './modules/foundation-models.js'
+import { getModelId } from './modules/foundation-models.js'
 import { Logger } from '@aws-lambda-powertools/logger'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const logger = new Logger({ serviceName: 'chatrix', level: 'INFO' })
 const fastify = Fastify({ logger: true })
@@ -22,9 +28,33 @@ const AWS_REGION = 'us-west-2'
 const client = new BedrockRuntimeClient({ region: AWS_REGION })
 const secretsClient = new SecretsManagerClient({ region: AWS_REGION })
 
-// Cache for API key
+// Cache for API key and system prompt
 let validApiKey = null
-const SecretName = process.env.SecretName || 'chatrix/api-key'
+let systemPrompt = null
+const SecretName = process.env.SecretName || 'prod/chatrix/api-key'
+
+// Function to load system prompt from file
+const getSystemPrompt = async () => {
+  if (systemPrompt) {
+    return systemPrompt // Return cached value
+  }
+
+  try {
+    const promptPath = join(__dirname, 'prompts', 'system-prompt.md')
+    const content = await readFile(promptPath, 'utf-8')
+
+    // Use the content as-is (it's already concise after your edits)
+    systemPrompt = content.trim()
+
+    logger.info('System prompt loaded successfully', { promptLength: systemPrompt.length })
+    return systemPrompt
+  } catch (error) {
+    logger.warn('Failed to load system prompt, using default', { error: error.message })
+    // Fallback to default
+    systemPrompt = 'You are an expert software engineering assistant. Write clean, production-ready code with proper error handling, logging, and observability.'
+    return systemPrompt
+  }
+}
 
 // Function to get API key from Secrets Manager
 const getValidApiKey = async () => {
@@ -37,7 +67,7 @@ const getValidApiKey = async () => {
     const response = await secretsClient.send(
       new GetSecretValueCommand({ SecretId: SecretName })
     )
-    
+
     const secret = JSON.parse(response.SecretString)
     validApiKey = secret.api_key
     logger.info('API key loaded successfully')
@@ -56,7 +86,7 @@ const validateApiKey = async (authHeader) => {
 
   const token = authHeader.substring(7) // Remove 'Bearer ' prefix
   const validKey = await getValidApiKey()
-  
+
   return token === validKey
 }
 
@@ -73,6 +103,10 @@ const BEDROCK_PRICING = {
   'claude-sonnet-4': {
     input: 0.003, // $3 per 1M = $0.003 per 1K input tokens
     output: 0.015 // $15 per 1M = $0.015 per 1K output tokens
+  },
+  'deepseek-r1-v1': {
+    input: 0.0014, // $1.4 per 1M = $0.0014 per 1K input tokens
+    output: 0.0028 // $2.8 per 1M = $0.0028 per 1K output tokens
   }
 }
 
@@ -101,9 +135,9 @@ fastify.post('/v1/messages', async (request, reply) => {
     // Validate API key
     const authHeader = request.headers.authorization
     const isValidApiKey = await validateApiKey(authHeader)
-    
+
     if (!isValidApiKey) {
-      logger.warn('Invalid or missing API key', { 
+      logger.warn('Invalid or missing API key', {
         requestId,
         clientIP: request.ip,
         hasAuth: !!authHeader
@@ -118,6 +152,7 @@ fastify.post('/v1/messages', async (request, reply) => {
     }
 
     const { model, messages, max_tokens, stream } = request.body
+
     logger.info('Anthropic API request received', {
       requestId,
       model,
@@ -158,37 +193,64 @@ fastify.post('/v1/messages', async (request, reply) => {
       userPrompt = ''
     }
 
-    const modelId = getModelId(model)
-    const payload = foundationModelsPayload(userPrompt, model, max_tokens || 1024, 0.3, 0.3)
+    // Claude 4.5+ models only support temperature OR topP, not both
+    // Older models (Claude 3.x) support both
+    const claude45Models = [
+      'claude-sonnet-4-5-20250929',
+      'claude-haiku-4-5-20251001',
+      'claude-sonnet-4-20250514',
+      'claude-opus-4-1-20250805'
+    ]
+    const isClaude45Plus = claude45Models.includes(model)
 
-    const response = await client.send(
-      new InvokeModelWithResponseStreamCommand({
-        contentType: 'application/json',
-        body: JSON.stringify(payload),
-        modelId
-      })
-    )
+    const inferenceConfig = {
+      maxTokens: max_tokens || 1024,
+      temperature: 0.3
+    }
+
+    // Only add topP for older models that support both parameters
+    if (!isClaude45Plus) {
+      inferenceConfig.topP = 0.3
+    }
+
+    const converseParams = {
+      modelId: getModelId(model),
+      messages: [
+        {
+          role: 'user',
+          content: [{ text: userPrompt }]
+        }
+      ],
+      inferenceConfig
+    }
+    const response = await client.send(new ConverseStreamCommand(converseParams))
 
     let fullResponse = ''
+    let inputTokens = 0
+    let outputTokens = 0
 
     // Process all chunks to get complete response
-    for await (const chunk of response.body) {
-      if (chunk.chunk?.bytes) {
-        const chunkData = JSON.parse(new TextDecoder().decode(chunk.chunk.bytes))
-        let content = ''
-        if (chunkData.type === 'content_block_delta' && chunkData.delta?.text) {
-          content = chunkData.delta.text
-        }
+    for await (const chunk of response.stream) {
+      if (chunk.contentBlockDelta?.delta?.text) {
+        const content = chunk.contentBlockDelta.delta.text
+        fullResponse += content
+      }
 
-        if (content) {
-          fullResponse += content
+      // Token usage is in the final chunk for ConverseStream
+      if (chunk.messageStop?.stopReason) {
+        // Get usage from metadata if available
+        if (chunk.metadata?.usage) {
+          inputTokens = chunk.metadata.usage.inputTokens || 0
+          outputTokens = chunk.metadata.usage.outputTokens || 0
         }
       }
     }
 
-    // Calculate token usage and cost
-    const inputTokens = Math.ceil(userPrompt.length / 4)
-    const outputTokens = Math.ceil(fullResponse.length / 4)
+    // Fallback to approximation if no usage data
+    if (inputTokens === 0) {
+      inputTokens = Math.ceil(userPrompt.length / 4)
+      outputTokens = Math.ceil(fullResponse.length / 4)
+    }
     const cost = calculateCost(model, inputTokens, outputTokens)
 
     // Return Anthropic API format
@@ -212,7 +274,7 @@ fastify.post('/v1/messages', async (request, reply) => {
         cost
       }
     }
-
+    //
     const duration = Date.now() - startTime
     logger.info('Anthropic API request completed', {
       requestId,

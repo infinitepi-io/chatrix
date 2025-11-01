@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__aws-docs__search_documentation",
+      "mcp__aws-docs__read_documentation"
+    ],
+    "deny": [
+      "Bash(pnpm install:*)",
+      "Bash(node index.js:*)"
+    ]
+  }
+}

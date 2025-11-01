@@ -5,49 +5,38 @@
  * @returns {Object}
  */
 
-const modelConfigration = (UserPrompt, max_tokens, temperature) => ({
-  claude: {
-    payload: {
-      anthropic_version: 'bedrock-2023-05-31',
-      max_tokens: max_tokens > 1024 ? 1024 : max_tokens,
-      temperature: temperature > 0.3 ? 0.3 : temperature,
-      top_p: 0.3,
-      system: [{
-        type: 'text',
-        text: 'You are a helpful AI assistant.',
-        cache_control: { type: 'ephemeral' }
-      }],
-      messages: [{ role: 'user', content: [{ type: 'text', text: UserPrompt }] }]
-    }
-  }
-})
-
-export const foundationModelsPayload = (UserPrompt, modelName, max_tokens, temperature) => {
-  const config = modelConfigration(UserPrompt, max_tokens, temperature)
-
-  switch (modelName) {
-    case 'claude-sonnet-4-20250514':
-      return config.claude.payload
-    case 'claude-3-7-sonnet-20250219':
-      return config.claude.payload
-    case 'claude-3-5-haiku-20241022':
-      return config.claude.payload
-    default:
-      console.log('Invalid model selection. Defaulting to Claude Sonnet 3.')
-      return config.claude.payload
-  }
-}
-
 export const getModelId = (modelName) => {
   switch (modelName) {
+    // Claude Sonnet 4.5 (US cross-region)
+    case 'claude-sonnet-4-5-20250929':
+      return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0'
+
+    // Claude Sonnet 4 (US cross-region)
     case 'claude-sonnet-4-20250514':
       return 'us.anthropic.claude-sonnet-4-20250514-v1:0'
+
+    // Claude Haiku 4.5 (US cross-region)
+    case 'claude-haiku-4-5-20251001':
+      return 'us.anthropic.claude-haiku-4-5-20251001-v1:0'
+
+    // Claude 3.5 Haiku (US cross-region)
     case 'claude-3-5-haiku-20241022':
       return 'us.anthropic.claude-3-5-haiku-20241022-v1:0'
+
+    // Claude Opus 4.1 (US cross-region)
+    case 'claude-opus-4-1-20250805':
+      return 'us.anthropic.claude-opus-4-1-20250805-v1:0'
+
+    // Claude 3.7 Sonnet (US cross-region)
     case 'claude-3-7-sonnet-20250219':
       return 'us.anthropic.claude-3-7-sonnet-20250219-v1:0'
+
+    // DeepSeek (US cross-region)
+    case 'deepseek-r1-v1':
+      return 'us.deepseek.r1-v1:0'
+
     default:
-      console.log('Invalid model selection. Defaulting to Claude Sonnet 3.')
+      console.log('Invalid model selection. Defaulting to Claude 3.7 Sonnet.')
       return 'us.anthropic.claude-3-7-sonnet-20250219-v1:0'
   }
 }
