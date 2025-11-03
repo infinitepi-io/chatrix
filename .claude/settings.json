@@ -1,12 +1,16 @@
 {
   "permissions": {
     "allow": [
+      "Bash(tofu validate:*)",
+      "Bash(tofu init:*)",
+      "Bash(tofu fmt:*)",
       "mcp__aws-docs__search_documentation",
       "mcp__aws-docs__read_documentation"
     ],
     "deny": [
-      "Bash(pnpm install:*)",
-      "Bash(node index.js:*)"
+      "Bash(tofu apply:*)",
+      "Bash(tofu plan:*)",
+      "Bash(tofu destroy:*)"
     ]
   }
 }

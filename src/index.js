@@ -33,29 +33,6 @@ let validApiKey = null
 let systemPrompt = null
 const SecretName = process.env.SecretName || 'prod/chatrix/api-key'
 
-// Function to load system prompt from file
-const getSystemPrompt = async () => {
-  if (systemPrompt) {
-    return systemPrompt // Return cached value
-  }
-
-  try {
-    const promptPath = join(__dirname, 'prompts', 'system-prompt.md')
-    const content = await readFile(promptPath, 'utf-8')
-
-    // Use the content as-is (it's already concise after your edits)
-    systemPrompt = content.trim()
-
-    logger.info('System prompt loaded successfully', { promptLength: systemPrompt.length })
-    return systemPrompt
-  } catch (error) {
-    logger.warn('Failed to load system prompt, using default', { error: error.message })
-    // Fallback to default
-    systemPrompt = 'You are an expert software engineering assistant. Write clean, production-ready code with proper error handling, logging, and observability.'
-    return systemPrompt
-  }
-}
-
 // Function to get API key from Secrets Manager
 const getValidApiKey = async () => {
   if (validApiKey) {
