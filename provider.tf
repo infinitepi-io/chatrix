@@ -50,8 +50,8 @@ provider "aws" {
   alias               = "infra_mgnt_use1"
   region              = "us-east-1"
   allowed_account_ids = ["158710814571"]
-  # assume_role {
-  #   role_arn = "arn:aws:iam::158710814571:role/spacelift-functional"
-  # }
+  assume_role {
+    role_arn = "arn:aws:iam::158710814571:role/spacelift-functional"
+  }
   default_tags { tags = local.default_tags }
 }

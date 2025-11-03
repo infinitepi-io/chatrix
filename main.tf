@@ -116,9 +116,16 @@ resource "aws_lambda_function" "chatrix" {
   role          = aws_iam_role.chatrix_lambda.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.chatrix.repository_url}:${var.image_tag}"
+  architectures = ["arm64"]
 
   timeout     = var.lambda_timeout
   memory_size = var.lambda_memory
+
+  environment {
+    variables = {
+      SecretName = data.aws_secretsmanager_secret.chatrix_api_key.name
+    }
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.lambda_basic,
