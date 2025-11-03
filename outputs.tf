@@ -27,3 +27,13 @@ output "cloudwatch_log_group" {
   description = "CloudWatch Log Group name"
   value       = aws_cloudwatch_log_group.chatrix.name
 }
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name (use this for CloudFlare CNAME)"
+  value       = aws_cloudfront_distribution.chatrix.domain_name
+}
+
+output "cloudfront_url" {
+  description = "CloudFront distribution URL"
+  value       = "https://${aws_cloudfront_distribution.chatrix.domain_name}"
+}

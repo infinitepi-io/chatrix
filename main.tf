@@ -1,7 +1,7 @@
 # ECR Repository for container images
 resource "aws_ecr_repository" "chatrix" {
   provider             = aws.infra_mgnt_usw2
-  name                 = var.function_name
+  name                 = "infinite-pi/${var.function_name}"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -25,7 +25,7 @@ resource "aws_ecr_lifecycle_policy" "chatrix" {
       selection = {
         tagStatus   = "any"
         countType   = "imageCountMoreThan"
-        countNumber = 10
+        countNumber = 5
       }
       action = {
         type = "expire"
@@ -149,13 +149,3 @@ resource "aws_lambda_function_url" "chatrix" {
   }
 }
 
-# SAM Metadata for local testing (optional)
-resource "null_resource" "sam_metadata_chatrix" {
-  triggers = {
-    resource_name  = "aws_lambda_function.chatrix"
-    resource_type  = "IMAGE_LAMBDA_FUNCTION"
-    docker_context = "${path.root}/.."
-    docker_file    = "Dockerfile"
-    docker_tag     = var.image_tag
-  }
-}

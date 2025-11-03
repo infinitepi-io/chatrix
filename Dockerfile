@@ -14,7 +14,7 @@ RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile --production
 
 # Copy application code
-COPY . .
+COPY src/ ./src/
 
 # Set environment variables for Lambda Web Adapter
 ENV AWS_LWA_ENABLE_COMPRESSION=true
@@ -27,4 +27,4 @@ EXPOSE 3000
 
 # The Lambda Web Adapter will handle the Lambda runtime
 # Your app just needs to start on port 3000
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
