@@ -35,9 +35,9 @@ resource "aws_cloudfront_distribution" "chatrix" {
   comment         = "CloudFront distribution for Chatrix Lambda Function"
 
   default_cache_behavior {
-    # Only allow POST (the endpoint only accepts POST requests)
-    allowed_methods        = ["POST", "OPTIONS"]
-    cached_methods         = []
+    # CloudFront requires GET/HEAD even if origin only accepts POST
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
     target_origin_id       = local.origin_id
     viewer_protocol_policy = "redirect-to-https"
 

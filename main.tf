@@ -120,13 +120,6 @@ resource "aws_lambda_function" "chatrix" {
   timeout     = var.lambda_timeout
   memory_size = var.lambda_memory
 
-  environment {
-    variables = {
-      SecretName = data.aws_secretsmanager_secret.chatrix_api_key.name
-      AWS_REGION = var.aws_region
-    }
-  }
-
   depends_on = [
     aws_iam_role_policy_attachment.lambda_basic,
     aws_iam_role_policy_attachment.chatrix_permissions,
