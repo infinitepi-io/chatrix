@@ -113,6 +113,7 @@ resource "aws_iam_role_policy_attachment" "chatrix_permissions" {
 resource "aws_lambda_function" "chatrix" {
   provider      = aws.infra_mgnt_usw2
   function_name = var.function_name
+  description   = "Chatrix: Anthropic API-compatible proxy for AWS Bedrock."
   role          = aws_iam_role.chatrix_lambda.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.chatrix.repository_url}:${var.image_tag}"

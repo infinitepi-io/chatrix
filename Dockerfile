@@ -29,7 +29,8 @@ ENV AWS_LWA_READINESS_CHECK_PROTOCOL=http
 EXPOSE 3000
 
 # Use tini as entrypoint for proper signal handling
-ENTRYPOINT ["/usr/bin/tini", "--"]
+# -s flag registers tini as child subreaper (suppresses warning in Lambda)
+ENTRYPOINT ["/usr/bin/tini", "-s", "--"]
 
 # The Lambda Web Adapter will handle the Lambda runtime
 # Your app just needs to start on port 3000

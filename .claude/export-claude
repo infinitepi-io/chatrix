@@ -29,3 +29,9 @@ curl -X POST http://localhost:3000/v1/messages \
           ],
           "max_tokens": 1024
  }'
+
+
+export ECR_REPO=$(aws ecr describe-repositories --repository-names "infinite-pi/chatrix" --region us-west-2 --query 'repositories[0].repositoryUri' --output text)
+aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $ECR_REPO
+docker tag chatrix:latest $ECR_REPO:latest
+docker push $ECR_REPO:latest

@@ -24,6 +24,86 @@ fastify.get('/health', async (request, reply) => {
   return { status: 'ok', timestamp: new Date().toISOString() }
 })
 
+// Token counting endpoint (used by Claude Code before making actual requests)
+fastify.post('/v1/messages/count_tokens', async (request, reply) => {
+  try {
+    // Validate API key
+    const authHeader = request.headers.authorization
+    const isValidApiKey = await validateApiKey(authHeader)
+
+    if (!isValidApiKey) {
+      return reply.code(401).type('application/json').send({
+        type: 'error',
+        error: {
+          message: 'Invalid API key',
+          type: 'authentication_error'
+        }
+      })
+    }
+
+    const { model, messages, system } = request.body
+
+    if (!messages) {
+      return reply.code(400).type('application/json').send({
+        type: 'error',
+        error: {
+          message: 'Missing required parameter: messages',
+          type: 'invalid_request_error'
+        }
+      })
+    }
+
+    // Simple token estimation (approximate)
+    // Anthropic uses ~4 characters per token as rough estimate
+    let totalTokens = 0
+
+    // Count system prompt tokens
+    if (system) {
+      const systemText = Array.isArray(system)
+        ? system.map(s => s.text || '').join(' ')
+        : system
+      totalTokens += Math.ceil(systemText.length / 4)
+    }
+
+    // Count message tokens
+    for (const message of messages) {
+      const content = message.content
+      if (typeof content === 'string') {
+        totalTokens += Math.ceil(content.length / 4)
+      } else if (Array.isArray(content)) {
+        for (const item of content) {
+          if (item.type === 'text' && item.text) {
+            totalTokens += Math.ceil(item.text.length / 4)
+          }
+        }
+      }
+    }
+
+    logger.info('Token count request', {
+      model,
+      estimatedTokens: totalTokens,
+      clientIP: request.ip
+    })
+
+    return {
+      input_tokens: totalTokens
+    }
+  } catch (error) {
+    logger.error('Token count request failed', {
+      error: error.message,
+      clientIP: request.ip
+    })
+
+    return reply.code(500).type('application/json').send({
+      type: 'error',
+      error: {
+        message: 'Internal server error',
+        type: 'internal_server_error'
+      }
+    })
+  }
+})
+
 const AWS_REGION = 'us-west-2'
 const client = new BedrockRuntimeClient({ region: AWS_REGION })
 const secretsClient = new SecretsManagerClient({ region: AWS_REGION })
