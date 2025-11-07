@@ -1,0 +1,106 @@
+name: Build and Push to ECR
+
+on:
+  # Testing trigger on feat/auto-deployment branch
+  # push:
+  #   branches:
+  #     - feat/auto-deployment
+
+  # Manual trigger with optional tag input
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag (leave empty for auto-generated from commit SHA)'
+        required: false
+        type: string
+
+  # Automatic trigger on release creation (includes version tags)
+  release:
+    types: [published]
+
+env:
+  AWS_REGION: us-west-2
+  ECR_REPOSITORY: infinite-pi/chatrix
+
+permissions:
+  id-token: write   # Required for OIDC authentication
+  contents: read    # Required to checkout code
+
+jobs:
+  build-deploy-infra-mgnt-usw2:
+    runs-on: [runs-on,runner=1cpu-linux-arm64,image=ubuntu22-full-arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Assume Gateway Role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::158710814571:role/github-gateway
+          role-session-name: chatrix
+          aws-region: ap-south-1
+          retry-max-attempts: 2
+      - name: Assume Functional Role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::158710814571:role/deploy-chatrix-infra-mgnt-usw2
+          role-session-name: chatrix
+          aws-region: us-west-2
+          role-chaining: true
+          retry-max-attempts: 2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up QEMU for ARM64 emulation
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Determine image tag
+        id: tag
+        run: |
+          # Priority: manual input > git tag > commit SHA
+          if [ "${{ github.event.inputs.tag }}" != "" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+            echo "Using manual input tag: $TAG"
+          elif [[ $GITHUB_REF == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            echo "Using git tag: $TAG"
+          else
+            TAG="sha-${GITHUB_SHA::8}"
+            echo "Using commit SHA tag: $TAG"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Update Lambda function
+        run: |
+          echo "Updating Lambda function with new image..."
+          aws lambda update-function-code \
+            --function-name chatrix \
+            --image-uri ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }} \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployment complete!"
+          echo "  Image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.tag }}"
+          echo "  Lambda: chatrix (${{ env.AWS_REGION }})"
