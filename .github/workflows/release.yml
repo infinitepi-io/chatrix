@@ -23,7 +23,7 @@ jobs:
           # Release type - uses conventional commits
           release-type: node
           # GitHub token for authentication
-          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Output summary
         if: ${{ steps.release.outputs.release_created }}
