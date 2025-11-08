@@ -1,0 +1,34 @@
+name: Automatic Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Create Release with Release Please
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          # Release type - uses conventional commits
+          release-type: node
+
+      - name: Output summary
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          echo "🎉 Release ${{ steps.release.outputs.tag_name }} created!"
+          echo "This will trigger the build-push workflow to deploy the new version."
+          echo ""
+          echo "Release details:"
+          echo "  Tag: ${{ steps.release.outputs.tag_name }}"
+          echo "  Version: ${{ steps.release.outputs.version }}"
+          echo "  SHA: ${{ steps.release.outputs.sha }}"
