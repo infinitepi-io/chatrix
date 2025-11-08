@@ -1,5 +1,6 @@
 output "lambda_function_url" {
   description = "Lambda Function URL endpoint"
+  sensitive   = true
   value       = aws_lambda_function_url.chatrix.function_url
 }
 
