@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   build-deploy-infra-mgnt-usw2:
-    runs-on: [runs-on,runner=1cpu-linux-arm64,image=ubuntu22-full-arm64]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
