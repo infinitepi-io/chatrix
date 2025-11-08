@@ -2,9 +2,9 @@ name: Build and Push to ECR
 
 on:
   # Testing trigger on feat/auto-deployment branch
-  # push:
-  #   branches:
-  #     - feat/auto-deployment
+  push:
+    branches:
+      - feat/auto-deployment
 
   # Manual trigger with optional tag input
   workflow_dispatch:
@@ -63,13 +63,13 @@ jobs:
       - name: Determine image tag
         id: tag
         run: |
-          # Priority: manual input > git tag > commit SHA
+          # Priority: manual input > release tag > commit SHA
           if [ "${{ github.event.inputs.tag }}" != "" ]; then
             TAG="${{ github.event.inputs.tag }}"
             echo "Using manual input tag: $TAG"
-          elif [[ $GITHUB_REF == refs/tags/* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-            echo "Using git tag: $TAG"
+          elif [ "${{ github.event_name }}" == "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            echo "Using release tag: $TAG"
           else
             TAG="sha-${GITHUB_SHA::8}"
             echo "Using commit SHA tag: $TAG"

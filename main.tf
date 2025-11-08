@@ -128,6 +128,11 @@ resource "aws_lambda_function" "chatrix" {
     }
   }
 
+  # Ignore image_uri changes as GitHub Actions manages deployments
+  lifecycle {
+    ignore_changes = [image_uri]
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.lambda_basic,
     aws_iam_role_policy_attachment.chatrix_permissions,
