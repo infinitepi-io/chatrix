@@ -1,11 +1,6 @@
 name: Build and Push to ECR
 
 on:
-  # Testing trigger on feat/auto-deployment branch
-  push:
-    branches:
-      - feat/auto-deployment
-
   # Manual trigger with optional tag input
   workflow_dispatch:
     inputs:
