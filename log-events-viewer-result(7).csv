@@ -1,0 +1,286 @@
+timestamp,message
+1762596005462,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596005463,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596005463,"INIT_REPORT Init Duration: 3.22 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596005463,"START RequestId: ded4c301-912d-406e-b38e-45980c18e478 Version: $LATEST
+"
+1762596005464,"RequestId: ded4c301-912d-406e-b38e-45980c18e478 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596005464,"END RequestId: ded4c301-912d-406e-b38e-45980c18e478
+"
+1762596005464,"REPORT RequestId: ded4c301-912d-406e-b38e-45980c18e478	Duration: 4.39 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596076518,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596076518,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596076518,"INIT_REPORT Init Duration: 3.34 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596076518,"START RequestId: 92f60ee1-1482-447f-ad7d-9f12a2997aa1 Version: $LATEST
+"
+1762596076521,"RequestId: 92f60ee1-1482-447f-ad7d-9f12a2997aa1 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596076521,"END RequestId: 92f60ee1-1482-447f-ad7d-9f12a2997aa1
+"
+1762596076521,"REPORT RequestId: 92f60ee1-1482-447f-ad7d-9f12a2997aa1	Duration: 6.33 ms	Billed Duration: 7 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596122509,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596122510,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596122510,"INIT_REPORT Init Duration: 3.03 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596122510,"START RequestId: 843e44ad-6100-4a82-a0d3-849757be341b Version: $LATEST
+"
+1762596122521,"RequestId: 843e44ad-6100-4a82-a0d3-849757be341b Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596122521,"END RequestId: 843e44ad-6100-4a82-a0d3-849757be341b
+"
+1762596122521,"REPORT RequestId: 843e44ad-6100-4a82-a0d3-849757be341b	Duration: 13.98 ms	Billed Duration: 14 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596122541,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596122541,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596122541,"INIT_REPORT Init Duration: 3.67 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596122541,"START RequestId: b2462ad3-4a0d-41ed-bca2-1d9dadb331e8 Version: $LATEST
+"
+1762596122542,"RequestId: b2462ad3-4a0d-41ed-bca2-1d9dadb331e8 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596122542,"END RequestId: b2462ad3-4a0d-41ed-bca2-1d9dadb331e8
+"
+1762596122542,"REPORT RequestId: b2462ad3-4a0d-41ed-bca2-1d9dadb331e8	Duration: 4.90 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596123282,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596123282,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596123282,"INIT_REPORT Init Duration: 2.87 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596123282,"START RequestId: 61852131-6a99-40be-b9cb-780d9f38d603 Version: $LATEST
+"
+1762596123283,"RequestId: 61852131-6a99-40be-b9cb-780d9f38d603 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596123283,"END RequestId: 61852131-6a99-40be-b9cb-780d9f38d603
+"
+1762596123283,"REPORT RequestId: 61852131-6a99-40be-b9cb-780d9f38d603	Duration: 4.09 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596123320,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596123320,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596123320,"INIT_REPORT Init Duration: 3.17 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596123320,"START RequestId: 6afca210-13bd-4065-a193-f670d704ed77 Version: $LATEST
+"
+1762596123322,"RequestId: 6afca210-13bd-4065-a193-f670d704ed77 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596123322,"END RequestId: 6afca210-13bd-4065-a193-f670d704ed77
+"
+1762596123322,"REPORT RequestId: 6afca210-13bd-4065-a193-f670d704ed77	Duration: 4.54 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 4 MB	
+"
+1762596124614,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596124614,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596124614,"INIT_REPORT Init Duration: 3.58 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596124614,"START RequestId: 3f7a94ba-eefa-488c-818e-6764215891a8 Version: $LATEST
+"
+1762596124621,"RequestId: 3f7a94ba-eefa-488c-818e-6764215891a8 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596124621,"END RequestId: 3f7a94ba-eefa-488c-818e-6764215891a8
+"
+1762596124621,"REPORT RequestId: 3f7a94ba-eefa-488c-818e-6764215891a8	Duration: 10.69 ms	Billed Duration: 11 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596124695,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596124701,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596124701,"INIT_REPORT Init Duration: 10.21 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596124701,"START RequestId: cc4bb794-7363-48a4-8d38-247962d4bd16 Version: $LATEST
+"
+1762596124703,"RequestId: cc4bb794-7363-48a4-8d38-247962d4bd16 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596124703,"END RequestId: cc4bb794-7363-48a4-8d38-247962d4bd16
+"
+1762596124703,"REPORT RequestId: cc4bb794-7363-48a4-8d38-247962d4bd16	Duration: 11.68 ms	Billed Duration: 12 ms	Memory Size: 512 MB	Max Memory Used: 4 MB	
+"
+1762596126203,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596126203,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596126203,"INIT_REPORT Init Duration: 3.68 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596126203,"START RequestId: d6e60171-5059-42c0-8ab5-bc6003149ee8 Version: $LATEST
+"
+1762596126205,"RequestId: d6e60171-5059-42c0-8ab5-bc6003149ee8 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596126205,"END RequestId: d6e60171-5059-42c0-8ab5-bc6003149ee8
+"
+1762596126205,"REPORT RequestId: d6e60171-5059-42c0-8ab5-bc6003149ee8	Duration: 4.96 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596126592,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596126593,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596126593,"INIT_REPORT Init Duration: 3.47 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596126593,"START RequestId: a20cabe9-5706-4e99-bb0d-b84d87f46f26 Version: $LATEST
+"
+1762596126601,"RequestId: a20cabe9-5706-4e99-bb0d-b84d87f46f26 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596126601,"END RequestId: a20cabe9-5706-4e99-bb0d-b84d87f46f26
+"
+1762596126601,"REPORT RequestId: a20cabe9-5706-4e99-bb0d-b84d87f46f26	Duration: 11.16 ms	Billed Duration: 12 ms	Memory Size: 512 MB	Max Memory Used: 4 MB	
+"
+1762596126752,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596126752,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596126752,"INIT_REPORT Init Duration: 3.10 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596126753,"START RequestId: 0d435528-510d-4ffc-8ddd-aea35e7ff6fc Version: $LATEST
+"
+1762596126761,"RequestId: 0d435528-510d-4ffc-8ddd-aea35e7ff6fc Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596126761,"END RequestId: 0d435528-510d-4ffc-8ddd-aea35e7ff6fc
+"
+1762596126761,"REPORT RequestId: 0d435528-510d-4ffc-8ddd-aea35e7ff6fc	Duration: 12.19 ms	Billed Duration: 13 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596126997,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596126997,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596126997,"INIT_REPORT Init Duration: 3.12 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596126997,"START RequestId: 3e745a91-bee1-4a8d-abf0-e8df3e1b07a2 Version: $LATEST
+"
+1762596127001,"RequestId: 3e745a91-bee1-4a8d-abf0-e8df3e1b07a2 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127001,"END RequestId: 3e745a91-bee1-4a8d-abf0-e8df3e1b07a2
+"
+1762596127001,"REPORT RequestId: 3e745a91-bee1-4a8d-abf0-e8df3e1b07a2	Duration: 6.95 ms	Billed Duration: 7 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596127045,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596127046,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596127046,"INIT_REPORT Init Duration: 3.08 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596127046,"START RequestId: 92736f87-6ec4-4c72-83bc-ab44233f2ece Version: $LATEST
+"
+1762596127061,"RequestId: 92736f87-6ec4-4c72-83bc-ab44233f2ece Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127061,"END RequestId: 92736f87-6ec4-4c72-83bc-ab44233f2ece
+"
+1762596127061,"REPORT RequestId: 92736f87-6ec4-4c72-83bc-ab44233f2ece	Duration: 18.57 ms	Billed Duration: 19 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596127148,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596127148,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596127148,"INIT_REPORT Init Duration: 3.34 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596127148,"START RequestId: 9088b566-6d3b-4224-812f-8c7ba6427118 Version: $LATEST
+"
+1762596127161,"RequestId: 9088b566-6d3b-4224-812f-8c7ba6427118 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127161,"END RequestId: 9088b566-6d3b-4224-812f-8c7ba6427118
+"
+1762596127161,"REPORT RequestId: 9088b566-6d3b-4224-812f-8c7ba6427118	Duration: 16.21 ms	Billed Duration: 17 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596127201,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596127201,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596127201,"INIT_REPORT Init Duration: 3.25 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596127201,"START RequestId: 2d949a7a-e862-4c90-9576-52f501d57fb1 Version: $LATEST
+"
+1762596127203,"RequestId: 2d949a7a-e862-4c90-9576-52f501d57fb1 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127203,"END RequestId: 2d949a7a-e862-4c90-9576-52f501d57fb1
+"
+1762596127203,"REPORT RequestId: 2d949a7a-e862-4c90-9576-52f501d57fb1	Duration: 4.49 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596127220,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596127221,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596127221,"INIT_REPORT Init Duration: 3.26 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596127221,"START RequestId: 81f4a3d5-bade-4669-8c78-4ee2b45b0eb0 Version: $LATEST
+"
+1762596127222,"RequestId: 81f4a3d5-bade-4669-8c78-4ee2b45b0eb0 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127222,"END RequestId: 81f4a3d5-bade-4669-8c78-4ee2b45b0eb0
+"
+1762596127222,"REPORT RequestId: 81f4a3d5-bade-4669-8c78-4ee2b45b0eb0	Duration: 4.37 ms	Billed Duration: 5 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596127457,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596127458,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596127458,"INIT_REPORT Init Duration: 2.70 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596127458,"START RequestId: 910cc26e-3a24-4c68-aee7-a192a38ca73d Version: $LATEST
+"
+1762596127461,"RequestId: 910cc26e-3a24-4c68-aee7-a192a38ca73d Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596127461,"END RequestId: 910cc26e-3a24-4c68-aee7-a192a38ca73d
+"
+1762596127461,"REPORT RequestId: 910cc26e-3a24-4c68-aee7-a192a38ca73d	Duration: 6.02 ms	Billed Duration: 7 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596128015,"[FATAL tini (12)] Failed to register as child subreaper: Operation not permitted
+"
+1762596128015,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596128016,"INIT_REPORT Init Duration: 3.18 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596128016,"START RequestId: 9f86bc84-2e5c-49a5-bbd8-6d1e8318f607 Version: $LATEST
+"
+1762596128021,"RequestId: 9f86bc84-2e5c-49a5-bbd8-6d1e8318f607 Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596128021,"END RequestId: 9f86bc84-2e5c-49a5-bbd8-6d1e8318f607
+"
+1762596128021,"REPORT RequestId: 9f86bc84-2e5c-49a5-bbd8-6d1e8318f607	Duration: 8.98 ms	Billed Duration: 9 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
+1762596128145,"[FATAL tini (11)] Failed to register as child subreaper: Operation not permitted
+"
+1762596128146,"EXTENSION	Name: lambda-adapter	State: Ready	Events: []
+"
+1762596128146,"INIT_REPORT Init Duration: 3.45 ms	Phase: invoke	Status: error	Error Type: Runtime.ExitError
+"
+1762596128146,"START RequestId: 7cb7cde2-6051-4a2c-b64f-d37173b0363b Version: $LATEST
+"
+1762596128162,"RequestId: 7cb7cde2-6051-4a2c-b64f-d37173b0363b Error: Runtime exited with error: exit status 1
+Runtime.ExitError
+"
+1762596128162,"END RequestId: 7cb7cde2-6051-4a2c-b64f-d37173b0363b
+"
+1762596128162,"REPORT RequestId: 7cb7cde2-6051-4a2c-b64f-d37173b0363b	Duration: 18.77 ms	Billed Duration: 19 ms	Memory Size: 512 MB	Max Memory Used: 6 MB	
+"
