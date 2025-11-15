@@ -118,6 +118,7 @@ resource "aws_lambda_function" "chatrix" {
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.chatrix.repository_url}:${var.image_tag}"
   architectures = ["arm64"]
+  reserved_concurrent_executions = 3
 
   timeout     = var.lambda_timeout
   memory_size = var.lambda_memory
