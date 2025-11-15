@@ -4,20 +4,20 @@ resource "aws_iam_role" "github_actions_ecr_push" {
   name     = "deploy-chatrix-infra-mgnt-usw2"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::158710814571:role/github-gateway"
-            },
-            "Action": [
-                "sts:AssumeRole",
-                "sts:TagSession"
-            ]
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::158710814571:role/github-gateway"
+        },
+        "Action" : [
+          "sts:AssumeRole",
+          "sts:TagSession"
+        ]
+      }
     ]
-})
+  })
 
   tags = {
     Name = "deploy-chatrix-infra-mgnt-usw2"
