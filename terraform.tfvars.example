@@ -1,0 +1,22 @@
+# Example Terraform Variables
+# Copy this to terraform.tfvars and fill in your values
+# OR set these as environment variables in Spacelift/CI
+
+# Custom domain for CloudFront (leave empty to skip CloudFront)
+domain_name = "your-domain.example.com"
+
+# ACM certificate domain pattern (must be in us-east-1)
+acm_certificate_domain = "*.example.com"
+
+# Lambda configuration
+function_name      = "app-name"
+image_tag          = "latest"
+lambda_timeout     = 60
+lambda_memory      = 512
+log_retention_days = 7
+
+# AWS region
+aws_region = "us-west-2"
+
+# Secrets Manager secret name for API key
+secret_name = "prod/app-name/api-key"

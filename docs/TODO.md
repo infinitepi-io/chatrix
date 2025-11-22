@@ -59,12 +59,12 @@ SAM CLI's Terraform hook does not support `IMAGE_LAMBDA_FUNCTION` metadata type 
 - [X] Configure AWS credentials
 - [X] Run `tofu init` to initialize providers
 - [X] Run `tofu validate` to check configuration
-- [ ] Verify/Request ACM certificate for `*.infinitepi-io.org` in us-east-1
+- [ ] Verify/Request ACM certificate for your domain in us-east-1
 - [ ] Deploy ECR repository with `tofu apply -target=aws_ecr_repository.chatrix`
 - [ ] Build and push Docker image to ECR
 - [ ] Deploy Lambda, Function URL, and CloudFront with `tofu apply`
-- [ ] Configure CloudFlare DNS CNAME pointing to CloudFront
-- [ ] Test endpoint at https://chatrix.infinitepi-io.org
+- [ ] Configure DNS CNAME pointing to CloudFront
+- [ ] Test endpoint at your custom domain
 
 ---
 
