@@ -2,17 +2,20 @@ locals {
   # Extract domain from Lambda Function URL (remove https:// and trailing /)
   lambda_domain = trimprefix(trimsuffix(aws_lambda_function_url.chatrix.function_url, "/"), "https://")
   origin_id     = "chatrix-lambda"
-  aliases       = ["chatrix.infinitepi-io.org"]
+  aliases       = var.domain_name != "" ? [var.domain_name] : []
 }
 
 # ACM Certificate must be in us-east-1 for CloudFront
+# Only fetch if domain_name is provided
 data "aws_acm_certificate" "chatrix" {
+  count    = var.acm_certificate_domain != "" ? 1 : 0
   provider = aws.infra_mgnt_use1
-  domain   = "*.infinitepi-io.org"
+  domain   = var.acm_certificate_domain
   statuses = ["ISSUED"]
 }
 
 resource "aws_cloudfront_distribution" "chatrix" {
+  count    = var.domain_name != "" ? 1 : 0
   provider = aws.infra_mgnt_usw2
   aliases  = local.aliases
 
@@ -55,7 +58,7 @@ resource "aws_cloudfront_distribution" "chatrix" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = data.aws_acm_certificate.chatrix.arn
+    acm_certificate_arn      = data.aws_acm_certificate.chatrix[0].arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }

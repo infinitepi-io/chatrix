@@ -187,7 +187,7 @@ SecretName=prod/chatrix/api-key  # for internal API key
 **Client Environment (Claude Code)**:
 ```bash
 export ANTHROPIC_AUTH_TOKEN=sk-ant-...
-export ANTHROPIC_BASE_URL=https://chatrix.infinitepi-io.org
+export ANTHROPIC_BASE_URL=https://your-chatrix-domain.com
 ```
 
 **Client Request Headers**:
@@ -290,14 +290,14 @@ curl -X POST http://localhost:3000/v1/messages \
 
 **Using Bedrock**:
 ```bash
-export ANTHROPIC_BASE_URL=https://chatrix.infinitepi-io.org
+export ANTHROPIC_BASE_URL=https://your-chatrix-domain.com
 # No ANTHROPIC_AUTH_TOKEN needed for Bedrock
 claude -p "test prompt"
 ```
 
 **Using Anthropic**:
 ```bash
-export ANTHROPIC_BASE_URL=https://chatrix.infinitepi-io.org
+export ANTHROPIC_BASE_URL=https://your-chatrix-domain.com
 export ANTHROPIC_AUTH_TOKEN=sk-ant-...
 # Add header via curl or custom client wrapper
 ```

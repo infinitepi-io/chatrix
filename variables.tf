@@ -39,3 +39,15 @@ variable "log_retention_days" {
   type        = number
   default     = 7
 }
+
+variable "domain_name" {
+  description = "Custom domain for CloudFront (e.g., chatrix.example.com)"
+  type        = string
+  default     = ""
+}
+
+variable "acm_certificate_domain" {
+  description = "ACM certificate domain pattern (e.g., *.example.com)"
+  type        = string
+  default     = ""
+}
