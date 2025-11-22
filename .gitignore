@@ -68,3 +68,6 @@ terraform.rc
 
 # Claude
 CLAUDE.local.md
+
+# docs
+SPACELIFT_DEPLOYMENT.md
