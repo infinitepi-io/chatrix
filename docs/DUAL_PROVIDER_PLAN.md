@@ -181,7 +181,7 @@ fastify.post('/v1/messages', async (request, reply) => {
 **Lambda Environment**:
 ```bash
 DEFAULT_PROVIDER=bedrock  # or 'anthropic'
-SecretName=prod/chatrix/api-key  # for internal API key
+SecretName=prod/your-app/api-key  # for internal API key
 ```
 
 **Client Environment (Claude Code)**:

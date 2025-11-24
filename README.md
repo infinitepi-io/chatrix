@@ -217,9 +217,14 @@ Create a secret in AWS Secrets Manager:
 
 ```bash
 aws secretsmanager create-secret \
-  --name prod/chatrix/api-key \
+  --name prod/your-app/api-key \
   --secret-string '{"api_key":"your-secure-api-key-here"}' \
   --region us-west-2
+```
+
+Set the secret name in Spacelift or as environment variable:
+```bash
+TF_VAR_secret_name=prod/your-app/api-key
 ```
 
 ## Development
