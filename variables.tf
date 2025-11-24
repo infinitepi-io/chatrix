@@ -19,7 +19,7 @@ variable "image_tag" {
 variable "secret_name" {
   description = "Secrets Manager secret name for API key"
   type        = string
-  default     = "prod/chatrix/api-key"
+  default     = ""  # Must be set via Spacelift or TF_VAR_secret_name
 }
 
 variable "lambda_timeout" {

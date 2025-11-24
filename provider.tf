@@ -16,6 +16,9 @@ locals {
   }
 }
 
+# Note: Update AWS account IDs and role ARN for your environment
+# These are configured for Spacelift role assumption
+
 # Default provider
 provider "aws" {
   region              = "us-west-2"
